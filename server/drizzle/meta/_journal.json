@@ -22,6 +22,13 @@
       "when": 1769895389228,
       "tag": "0002_light_veda",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1769899677823,
+      "tag": "0003_sturdy_iron_monger",
+      "breakpoints": true
     }
   ]
 }

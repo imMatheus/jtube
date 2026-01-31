@@ -108,9 +108,8 @@ export function VideoInfo({
           <span>{uploadedAt}</span>
         </div>
         <p
-          className={`text-sm text-(--color-text-primary) ${
-            expanded ? "" : "line-clamp-2"
-          }`}
+          className={`text-sm text-(--color-text-primary) ${expanded ? "" : "line-clamp-2"
+            }`}
         >
           {description}
         </p>

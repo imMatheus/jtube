@@ -5,6 +5,7 @@ import { Header } from "../layout/Header";
 import { VideoPlayer } from "./VideoPlayer";
 import { VideoInfo } from "./VideoInfo";
 import { VideoSidebar } from "./VideoSidebar";
+import { CommentSection } from "../comments";
 import { useData } from "../../hooks/useData";
 import { getVideoUrl, getThumbnailUrl } from "../../utils/thumbnail";
 import { formatViews } from "../../utils";
@@ -57,6 +58,7 @@ export function VideoPage() {
               description="Official Jeffery Epstein youtube channel."
               likes="3,918"
             />
+            <CommentSection videoId={video.id} />
           </div>
 
           {/* Sidebar */}

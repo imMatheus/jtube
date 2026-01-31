@@ -1,6 +1,11 @@
-import { desc, eq, sql } from "drizzle-orm";
-import { db } from "./db";
-import { videos } from "./db/schema";
+import { handleGetMe } from "./routes/users";
+import { handleGetVideos, handlePostView } from "./routes/videos";
+import {
+  handleGetComments,
+  handlePostComment,
+  handleLikeComment,
+  handleDislikeComment,
+} from "./routes/comments";
 
 const server = Bun.serve({
   port: 3001,
@@ -19,31 +24,44 @@ const server = Bun.serve({
       return new Response(null, { headers: corsHeaders });
     }
 
+    // GET /api/me - get current user
+    if (url.pathname === "/api/me" && req.method === "GET") {
+      return handleGetMe(req, corsHeaders);
+    }
+
     // GET /api/videos - return all videos sorted by most views
     if (url.pathname === "/api/videos" && req.method === "GET") {
-      const allVideos = await db.select().from(videos).orderBy(desc(videos.views));
-      return Response.json(allVideos, { headers: corsHeaders });
+      return handleGetVideos(corsHeaders);
     }
 
     // POST /api/videos/:id/view - increment view count
     const viewMatch = url.pathname.match(/^\/api\/videos\/([^/]+)\/view$/);
     if (viewMatch && req.method === "POST") {
-      const videoId = viewMatch[1];
+      return handlePostView(viewMatch[1], corsHeaders);
+    }
 
-      const result = await db
-        .update(videos)
-        .set({ views: sql`${videos.views} + 1` })
-        .where(eq(videos.id, videoId))
-        .returning();
+    // GET /api/videos/:videoId/comments - get comments for a video
+    const commentsGetMatch = url.pathname.match(/^\/api\/videos\/([^/]+)\/comments$/);
+    if (commentsGetMatch && req.method === "GET") {
+      return handleGetComments(req, commentsGetMatch[1], corsHeaders);
+    }
 
-      if (result.length === 0) {
-        return Response.json(
-          { error: "Video not found" },
-          { status: 404, headers: corsHeaders }
-        );
-      }
+    // POST /api/videos/:videoId/comments - create a comment
+    const commentsPostMatch = url.pathname.match(/^\/api\/videos\/([^/]+)\/comments$/);
+    if (commentsPostMatch && req.method === "POST") {
+      return handlePostComment(req, commentsPostMatch[1], corsHeaders);
+    }
 
-      return Response.json({ views: result[0].views }, { headers: corsHeaders });
+    // POST /api/comments/:commentId/like - like a comment
+    const likeMatch = url.pathname.match(/^\/api\/comments\/([^/]+)\/like$/);
+    if (likeMatch && req.method === "POST") {
+      return handleLikeComment(req, likeMatch[1], corsHeaders);
+    }
+
+    // POST /api/comments/:commentId/dislike - dislike a comment
+    const dislikeMatch = url.pathname.match(/^\/api\/comments\/([^/]+)\/dislike$/);
+    if (dislikeMatch && req.method === "POST") {
+      return handleDislikeComment(req, dislikeMatch[1], corsHeaders);
     }
 
     // 404 for other routes
