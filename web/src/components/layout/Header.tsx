@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { CHANNEL_AVATAR_URL } from "../../constants";
 import { Avatar } from "../ui/Avatar";
 import { IconButton } from "../ui/IconButton";
 import { ThemeToggle } from "../ui/ThemeToggle";
 import { InfoModal } from "../ui/InfoModal";
+import { ProfileDropdown } from "../ui/ProfileDropdown";
 import { Drawer } from "../ui/Drawer";
 import { SidebarContent } from "./Sidebar";
 import {
@@ -19,6 +21,7 @@ export function Header() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   return (
     <>
@@ -87,9 +90,12 @@ export function Header() {
                 <QuestionIcon />
               </IconButton>
               <ThemeToggle />
-              <button className="ml-1 sm:ml-2">
-                <Avatar size="sm" alt="User" />
-              </button>
+              <div className="relative ml-1 sm:ml-2">
+                <button onClick={() => setIsProfileOpen(!isProfileOpen)} className="cursor-pointer">
+                  <Avatar size="sm" alt="User" src={CHANNEL_AVATAR_URL} />
+                </button>
+                <ProfileDropdown isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} />
+              </div>
             </div>
           </>
         )}

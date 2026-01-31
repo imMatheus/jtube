@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CHANNEL_AVATAR_URL, CHANNEL_BANNER_URL } from "../../constants";
 import { ChannelBanner } from "./ChannelBanner";
 import { ChannelInfo } from "./ChannelInfo";
 import { ChannelTabs } from "./ChannelTabs";
@@ -18,7 +19,7 @@ export function ChannelPage() {
   return (
     <main className="md:ml-60 pt-14 min-h-screen bg-(--color-bg-primary)">
       <div className="max-w-[1284px] mx-auto px-4 md:px-6 py-4">
-        <ChannelBanner src="https://assets.getkino.com/photos/EFTA00003445-0.png" />
+        <ChannelBanner src={CHANNEL_BANNER_URL} />
 
         <ChannelInfo
           name="Jeffery Epstein"
@@ -26,7 +27,7 @@ export function ChannelPage() {
           subscribers="392K"
           videoCount={videos.length}
           description="Official Jeffery Epstein youtube channel."
-          avatar="https://assets.getkino.com/photos/EFTA00003692-0.png"
+          avatar={CHANNEL_AVATAR_URL}
           verified
         />
 

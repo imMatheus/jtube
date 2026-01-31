@@ -1,4 +1,5 @@
 import { useParams } from "react-router";
+import { CHANNEL_AVATAR_URL } from "../../constants";
 import { Header } from "../layout/Header";
 import { VideoPlayer } from "./VideoPlayer";
 import { VideoInfo } from "./VideoInfo";
@@ -40,7 +41,7 @@ export function VideoPage() {
               views="174,908"
               uploadedAt="4 months ago"
               channelName="Jeffery Epstein"
-              channelAvatar="https://assets.getkino.com/photos/EFTA00003692-0.png"
+              channelAvatar={CHANNEL_AVATAR_URL}
               subscribers="392K"
               description="Official Jeffery Epstein youtube channel."
               likes="3,918"

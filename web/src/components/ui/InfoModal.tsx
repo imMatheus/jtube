@@ -21,22 +21,14 @@ export function InfoModal({ isOpen, onClose }: InfoModalProps) {
         <p className="text-sm text-(--color-text-secondary)">
           Made by{' '}
           <a
-            href="https://github.com"
+            href="https://x.com/whosmatu"
             target="_blank"
             rel="noopener noreferrer"
             className="text-(--color-link) hover:underline"
           >
-            Your Name
+            Matheus Mendes
           </a>
-          .{' '}
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-(--color-link) hover:underline"
-          >
-            Learn more →
-          </a>
+
         </p>
       </div>
     </Modal>
