@@ -1,4 +1,5 @@
 import { useState } from "react";
+import NumberFlow from "@number-flow/react";
 import type { Comment as CommentType } from "../../hooks/useComments";
 import {
   useLikeComment,
@@ -6,7 +7,6 @@ import {
   usePostComment,
 } from "../../hooks/useComments";
 import { CommentInput } from "./CommentInput";
-import { formatViews } from "../../utils";
 import { LikeIcon, DislikeIcon } from "../icons";
 
 interface CommentProps {
@@ -96,9 +96,11 @@ export function Comment({ comment, videoId, isReply = false }: CommentProps) {
             >
               <LikeIcon className="w-4 h-4" filled={comment.userLike === true} />
             </button>
-            <span className="text-xs text-(--color-text-secondary)">
-              {comment.likes > 0 ? formatViews(comment.likes) : ""}
-            </span>
+
+            <NumberFlow value={comment.likes}
+              style={{ width: Math.max(1, Math.ceil(comment.likes / 10)) + 'ch' }}
+              className="text-xs text-(--color-text-secondary)" />
+
           </div>
 
           <div className="flex items-center">
@@ -109,9 +111,9 @@ export function Comment({ comment, videoId, isReply = false }: CommentProps) {
             >
               <DislikeIcon className="w-4 h-4" filled={comment.userLike === false} />
             </button>
-            <span className="text-xs text-(--color-text-secondary)">
-              {comment.dislikes > 0 ? formatViews(comment.dislikes) : ""}
-            </span>
+            <NumberFlow value={comment.dislikes}
+              style={{ width: Math.max(1, Math.ceil(comment.dislikes / 10)) + 'ch' }}
+              className="text-xs text-(--color-text-secondary)" />
           </div>
 
           {!isReply && (

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import NumberFlow from "@number-flow/react";
 import { Avatar } from "../ui/Avatar";
 import { Button } from "../ui/Button";
 import {
@@ -68,12 +69,13 @@ export function VideoInfo({ video }: VideoInfoProps) {
           {/* Like/Dislike */}
           <div className="flex items-center bg-(--color-bg-secondary) rounded-full overflow-hidden">
             <button
-              className="flex items-center gap-2 px-4 py-2 hover:bg-(--color-bg-hover) transition-colors"
+              className="flex transition-all items-center gap-2 px-4 py-2 hover:bg-(--color-bg-hover)"
               onClick={() => likeMutation.mutate()}
               disabled={likeMutation.isPending || dislikeMutation.isPending}
             >
               <LikeIcon filled={isLiked} />
-              <span className="text-sm font-medium">{formatViews(video.likes)}</span>
+              <NumberFlow value={video.likes}
+                style={{ width: Math.max(1, Math.ceil(video.likes / 10)) + 'ch' }} className="text-sm font-medium" />
             </button>
             <div className="w-px h-6 bg-(--color-border-light)" />
             <button
@@ -82,7 +84,9 @@ export function VideoInfo({ video }: VideoInfoProps) {
               disabled={likeMutation.isPending || dislikeMutation.isPending}
             >
               <DislikeIcon filled={isDisliked} />
-              <span className="text-sm font-medium">{formatViews(video.dislikes)}</span>
+              <NumberFlow value={video.dislikes}
+                style={{ width: Math.max(1, Math.ceil(video.likes / 10)) + 'ch' }}
+                className="text-sm font-medium" />
             </button>
           </div>
 

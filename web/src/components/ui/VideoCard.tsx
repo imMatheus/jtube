@@ -65,7 +65,7 @@ export function VideoCard({
           <div className="flex items-center gap-1 text-xs text-(--color-text-secondary) mt-0.5">
             <span>{formatViews(video.views)} views</span>
             <span>•</span>
-            <span>2 days ago</span>
+            <span>{formatViews(video.likes)} {video.likes === 1 ? "like" : "likes"}</span>
           </div>
         </div>
       </div>
