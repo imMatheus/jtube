@@ -54,7 +54,7 @@ export function ProfileDropdown({ isOpen, onClose }: ProfileDropdownProps) {
             @jefferyepstein
           </span>
           <Link
-            to="/channel"
+            to="/"
             onClick={onClose}
             className="text-blue-500 text-sm mt-1 hover:text-blue-400"
           >

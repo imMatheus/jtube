@@ -6,6 +6,7 @@ import { DataProvider } from "./contexts/DataContext";
 import App from "./App.tsx";
 import { VideoPage } from "./components/video/VideoPage";
 import { ShortsPage } from "./components/shorts/ShortsPage";
+import { NotFoundPage } from "./components/NotFoundPage";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/" element={<App />} />
             <Route path="/watch/:videoId" element={<VideoPage />} />
             <Route path="/shorts" element={<ShortsPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
