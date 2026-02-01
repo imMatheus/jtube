@@ -12,8 +12,10 @@ import {
   handleDislikeVideo,
 } from "./routes/videoLikes";
 
+const port = parseInt(Bun.env.PORT || "3001", 10);
+
 const server = Bun.serve({
-  port: 3001,
+  port,
   async fetch(req) {
     const url = new URL(req.url);
 
