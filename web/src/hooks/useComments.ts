@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { usePostHog } from "posthog-js/react";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
@@ -91,11 +92,13 @@ export function useCurrentUser() {
 
 export function usePostComment(videoId: string) {
   const queryClient = useQueryClient();
+  const posthog = usePostHog();
 
   return useMutation({
     mutationFn: ({ content, parentId }: { content: string; parentId?: string }) =>
       postComment(videoId, content, parentId),
-    onSuccess: () => {
+    onSuccess: (_, { parentId }) => {
+      posthog.capture("comment_created", { videoId, isReply: parentId != null });
       queryClient.invalidateQueries({ queryKey: ["comments", videoId] });
     },
   });
@@ -103,10 +106,12 @@ export function usePostComment(videoId: string) {
 
 export function useLikeComment(videoId: string) {
   const queryClient = useQueryClient();
+  const posthog = usePostHog();
 
   return useMutation({
     mutationFn: likeComment,
-    onSuccess: () => {
+    onSuccess: (_, commentId) => {
+      posthog.capture("comment_reaction", { videoId, commentId, action: "like" });
       queryClient.invalidateQueries({ queryKey: ["comments", videoId] });
     },
   });
@@ -114,10 +119,12 @@ export function useLikeComment(videoId: string) {
 
 export function useDislikeComment(videoId: string) {
   const queryClient = useQueryClient();
+  const posthog = usePostHog();
 
   return useMutation({
     mutationFn: dislikeComment,
-    onSuccess: () => {
+    onSuccess: (_, commentId) => {
+      posthog.capture("comment_reaction", { videoId, commentId, action: "dislike" });
       queryClient.invalidateQueries({ queryKey: ["comments", videoId] });
     },
   });

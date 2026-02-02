@@ -7,6 +7,7 @@ import { VideoPage } from "./components/video/VideoPage";
 import { ShortsPage } from "./pages/shorts/ShortsPage";
 import { NotFoundPage } from "./components/NotFoundPage";
 import { useData } from "./hooks/useData";
+import { usePostHogIdentify } from "./hooks/usePostHogIdentify";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -31,6 +32,7 @@ function LoadingSpinner() {
 
 function App() {
   const { isLoading, error } = useData();
+  usePostHogIdentify();
 
   if (isLoading) {
     return <LoadingSpinner />;
