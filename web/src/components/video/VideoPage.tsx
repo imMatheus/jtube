@@ -40,10 +40,25 @@ export function VideoPage() {
       <Helmet>
         <title>{video.title} - JeffTube</title>
         <meta name="description" content={`Watch ${video.title} on JeffTube`} />
-        <meta property="og:title" content={`${video.title} - JeffTube`} />
-        <meta property="og:description" content={`Watch ${video.title} on JeffTube`} />
+
+        {/* Open Graph / Facebook */}
         <meta property="og:type" content="video.other" />
+        <meta property="og:site_name" content="JeffTube" />
+        <meta property="og:title" content={video.title} />
+        <meta property="og:description" content={`Watch ${video.title} on JeffTube`} />
         <meta property="og:image" content={getThumbnailUrl(video)} />
+        <meta property="og:image:width" content="1280" />
+        <meta property="og:image:height" content="720" />
+        <meta property="og:image:alt" content={video.title} />
+        <meta property="og:video" content={getVideoUrl(video.filename)} />
+        <meta property="og:video:type" content="video/mp4" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={video.title} />
+        <meta name="twitter:description" content={`Watch ${video.title} on JeffTube`} />
+        <meta name="twitter:image" content={getThumbnailUrl(video)} />
+        <meta name="twitter:image:alt" content={video.title} />
       </Helmet>
       <Header />
       <main className="pt-14 px-4">

@@ -110,9 +110,19 @@ export function ChannelPage() {
       <Helmet>
         <title>Jeffery Epstein - JeffTube</title>
         <meta name="description" content="Official Jeffery Epstein JeffTube channel. Watch the latest videos and subscribe for more content." />
-        <meta property="og:title" content="Jeffery Epstein - JeffTube" />
-        <meta property="og:description" content="Official Jeffery Epstein JeffTube channel." />
+
+        {/* Open Graph / Facebook */}
         <meta property="og:type" content="profile" />
+        <meta property="og:site_name" content="JeffTube" />
+        <meta property="og:title" content="Jeffery Epstein - JeffTube" />
+        <meta property="og:description" content="Official Jeffery Epstein JeffTube channel. Watch the latest videos and subscribe for more content." />
+        <meta property="og:image" content="/preview.png" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Jeffery Epstein - JeffTube" />
+        <meta name="twitter:description" content="Official Jeffery Epstein JeffTube channel. Watch the latest videos and subscribe for more content." />
+        <meta name="twitter:image" content="/preview.png" />
       </Helmet>
       <main className="md:ml-60 pt-14 min-h-screen bg-(--color-bg-primary)">
         <div className="max-w-[1284px] mx-auto px-4 md:px-6 py-4">

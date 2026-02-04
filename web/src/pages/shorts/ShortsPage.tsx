@@ -57,9 +57,19 @@ export function ShortsPage() {
       <Helmet>
         <title>Shorts - JeffTube</title>
         <meta name="description" content="Watch short videos on JeffTube" />
+
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="JeffTube" />
         <meta property="og:title" content="Shorts - JeffTube" />
         <meta property="og:description" content="Watch short videos on JeffTube" />
-        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/preview.png" />
+
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Shorts - JeffTube" />
+        <meta name="twitter:description" content="Watch short videos on JeffTube" />
+        <meta name="twitter:image" content="/preview.png" />
       </Helmet>
       <main
         ref={containerRef}
