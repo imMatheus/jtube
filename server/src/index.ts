@@ -44,6 +44,7 @@ app.onError((err, c) => {
 
 const port = parseInt(Bun.env.PORT || "3001", 10);
 
+
 console.log(`Server running at http://localhost:${port}`);
 
 export default {
