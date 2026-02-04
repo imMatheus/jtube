@@ -12,12 +12,7 @@ interface ChannelInfoProps {
   verified?: boolean;
 }
 
-const links = [
-  {
-    label: "jmail.world",
-    url: "https://jmail.world",
-  },
-];
+const links: { label: string, url: string }[] = [];
 
 export function ChannelInfo({
   name,

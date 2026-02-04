@@ -10,7 +10,7 @@ import { Drawer } from "../ui/Drawer";
 import { SidebarContent } from "./Sidebar";
 import {
   MenuIcon,
-  JTubeLogo,
+  JeffTubeLogo,
   SearchIcon,
   KeyboardIcon,
   QuestionIcon,
@@ -57,7 +57,7 @@ export function Header() {
                 <MenuIcon />
               </IconButton>
               <Link to="/" className="flex items-center gap-1">
-                <JTubeLogo />
+                <JeffTubeLogo />
               </Link>
             </div>
 
@@ -108,7 +108,7 @@ export function Header() {
             <MenuIcon />
           </IconButton>
           <Link to="/" onClick={() => setIsDrawerOpen(false)}>
-            <JTubeLogo />
+            <JeffTubeLogo />
           </Link>
         </div>
         <div className="h-[calc(100vh-56px)] overflow-y-auto scrollbar-thin">

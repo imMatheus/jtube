@@ -108,58 +108,58 @@ export function ChannelPage() {
   return (
     <>
       <Helmet>
-        <title>Jeffery Epstein - JTube</title>
-        <meta name="description" content="Official Jeffery Epstein JTube channel. Watch the latest videos and subscribe for more content." />
-        <meta property="og:title" content="Jeffery Epstein - JTube" />
-        <meta property="og:description" content="Official Jeffery Epstein JTube channel." />
+        <title>Jeffery Epstein - JeffTube</title>
+        <meta name="description" content="Official Jeffery Epstein JeffTube channel. Watch the latest videos and subscribe for more content." />
+        <meta property="og:title" content="Jeffery Epstein - JeffTube" />
+        <meta property="og:description" content="Official Jeffery Epstein JeffTube channel." />
         <meta property="og:type" content="profile" />
       </Helmet>
       <main className="md:ml-60 pt-14 min-h-screen bg-(--color-bg-primary)">
-      <div className="max-w-[1284px] mx-auto px-4 md:px-6 py-4">
-        <ChannelBanner src={CHANNEL_BANNER_URL} />
+        <div className="max-w-[1284px] mx-auto px-4 md:px-6 py-4">
+          <ChannelBanner src={CHANNEL_BANNER_URL} />
 
-        <ChannelInfo
-          name="Jeffery Epstein"
-          handle="@jefferyepstein"
-          subscribers="392K"
-          videoCount={videos.length}
-          description="Official Jeffery Epstein youtube channel."
-          avatar={CHANNEL_AVATAR_URL}
-          verified
-        />
+          <ChannelInfo
+            name="Jeffery Epstein"
+            handle="@jeevacation"
+            subscribers="392K"
+            videoCount={videos.length}
+            description="All of the videos released by the DOJ from the Epstein files."
+            avatar={CHANNEL_AVATAR_URL}
+            verified
+          />
 
-        <ChannelTabs
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
+          <ChannelTabs
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
 
-        {activeTab === "videos" && (
-          <div className="py-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {sortedVideos.map((video) => (
-                <VideoCard key={video.id} video={video} size="lg" />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === "playlists" && (
-          <div className="py-6">
-            {playlists.length === 0 ? (
-              <p className="text-center text-(--color-text-secondary) py-10">
-                No playlists available
-              </p>
-            ) : (
+          {activeTab === "videos" && (
+            <div className="py-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {playlists.map((playlist) => (
-                  <PlaylistCard key={playlist.id} playlist={playlist} />
+                {sortedVideos.map((video) => (
+                  <VideoCard key={video.id} video={video} size="lg" />
                 ))}
               </div>
-            )}
-          </div>
-        )}
-      </div>
-    </main>
+            </div>
+          )}
+
+          {activeTab === "playlists" && (
+            <div className="py-6">
+              {playlists.length === 0 ? (
+                <p className="text-center text-(--color-text-secondary) py-10">
+                  No playlists available
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {playlists.map((playlist) => (
+                    <PlaylistCard key={playlist.id} playlist={playlist} />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </main>
     </>
   );
 }

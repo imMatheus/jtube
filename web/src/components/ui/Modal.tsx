@@ -29,7 +29,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center">
+    <div className="fixed inset-0 z-100 flex items-center justify-center">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/50"
@@ -37,7 +37,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       />
 
       {/* Modal */}
-      <div className="relative bg-(--color-bg-elevated) rounded-lg shadow-xl max-w-md w-full mx-4 z-10">
+      <div className="relative bg-(--color-bg-elevated) rounded-lg shadow-xl max-w-lg w-full mx-4 z-10">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-(--color-border-light)">
           <h2 className="text-lg font-semibold text-(--color-text-primary)">{title}</h2>

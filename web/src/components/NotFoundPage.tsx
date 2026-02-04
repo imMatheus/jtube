@@ -42,8 +42,8 @@ export function NotFoundPage() {
   return (
     <div className="min-h-screen bg-(--color-bg-primary) text-(--color-text-primary)">
       <Helmet>
-        <title>Page Not Found - JTube</title>
-        <meta name="description" content="This page isn't available on JTube" />
+        <title>Page Not Found - JeffTube</title>
+        <meta name="description" content="This page isn't available on JeffTube" />
         <meta name="robots" content="noindex" />
       </Helmet>
       <Header />

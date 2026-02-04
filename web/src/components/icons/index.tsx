@@ -8,11 +8,11 @@ export const MenuIcon = () => (
   </svg>
 );
 
-export const JTubeLogo = () => (
+export const JeffTubeLogo = () => (
   <div className="flex items-center gap-1">
 
-    <img src="/logo.png" alt="JTube" className="h-5" />
-    <span className="text-xl font-semibold tracking-tight">JTube</span>
+    <img src="/logo.png" alt="JeffTube" className="h-5" />
+    <span className="text-xl font-semibold tracking-tight">JeffTube</span>
   </div>
 );
 
@@ -156,7 +156,7 @@ export const PlayIcon = () => (
   </svg>
 );
 
-export const JTubePremiumIcon = () => (
+export const JeffTubePremiumIcon = () => (
   <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
     <path
       d="M10 9.35L15 12l-5 2.65zM12 6a54.36 54.36 0 00-7.56.38A1.53 1.53 0 003.38 7.4 24.47 24.47 0 003 12a24.47 24.47 0 00.38 4.6 1.53 1.53 0 001.06 1 54.36 54.36 0 007.56.4 54.36 54.36 0 007.56-.38 1.53 1.53 0 001.06-1A24.47 24.47 0 0021 12a24.47 24.47 0 00-.38-4.6 1.53 1.53 0 00-1.06-1A54.36 54.36 0 0012 6zm0-1a56.19 56.19 0 017.81.4 2.53 2.53 0 011.75 1.7A25.87 25.87 0 0122 12a25.87 25.87 0 01-.44 4.9 2.53 2.53 0 01-1.75 1.7A56.19 56.19 0 0112 19a56.19 56.19 0 01-7.81-.4 2.53 2.53 0 01-1.75-1.7A25.87 25.87 0 012 12a25.87 25.87 0 01.44-4.9 2.53 2.53 0 011.75-1.7A56.19 56.19 0 0112 5z"
@@ -165,7 +165,7 @@ export const JTubePremiumIcon = () => (
   </svg>
 );
 
-export const JTubeStudioIcon = () => (
+export const JeffTubeStudioIcon = () => (
   <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
     <path
       d="M10 9.35L15 12l-5 2.65zM12 6a54.36 54.36 0 00-7.56.38A1.53 1.53 0 003.38 7.4 24.47 24.47 0 003 12a24.47 24.47 0 00.38 4.6 1.53 1.53 0 001.06 1 54.36 54.36 0 007.56.4 54.36 54.36 0 007.56-.38 1.53 1.53 0 001.06-1A24.47 24.47 0 0021 12a24.47 24.47 0 00-.38-4.6 1.53 1.53 0 00-1.06-1A54.36 54.36 0 0012 6zm0-1a56.19 56.19 0 017.81.4 2.53 2.53 0 011.75 1.7A25.87 25.87 0 0122 12a25.87 25.87 0 01-.44 4.9 2.53 2.53 0 01-1.75 1.7A56.19 56.19 0 0112 19a56.19 56.19 0 01-7.81-.4 2.53 2.53 0 01-1.75-1.7A25.87 25.87 0 012 12a25.87 25.87 0 01.44-4.9 2.53 2.53 0 011.75-1.7A56.19 56.19 0 0112 5z"

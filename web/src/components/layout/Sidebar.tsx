@@ -103,8 +103,8 @@ export function SidebarContent({ onItemClick }: SidebarContentProps) {
 
       <div className="border-t border-(--color-border-light) my-3" />
 
-      {/* Your JTube */}
-      <SectionHeader title="Your JTube" hasArrow />
+      {/* Your JeffTube */}
+      <SectionHeader title="Your JeffTube" hasArrow />
       <SidebarItem
         icon={<HistoryIcon />}
         label="History"

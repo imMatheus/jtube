@@ -55,10 +55,10 @@ export function ShortsPage() {
   return (
     <>
       <Helmet>
-        <title>Shorts - JTube</title>
-        <meta name="description" content="Watch short videos on JTube" />
-        <meta property="og:title" content="Shorts - JTube" />
-        <meta property="og:description" content="Watch short videos on JTube" />
+        <title>Shorts - JeffTube</title>
+        <meta name="description" content="Watch short videos on JeffTube" />
+        <meta property="og:title" content="Shorts - JeffTube" />
+        <meta property="og:description" content="Watch short videos on JeffTube" />
         <meta property="og:type" content="website" />
       </Helmet>
       <main

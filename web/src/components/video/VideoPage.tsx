@@ -38,10 +38,10 @@ export function VideoPage() {
   return (
     <div className="min-h-screen bg-(--color-bg-primary) text-(--color-text-primary)">
       <Helmet>
-        <title>{video.title} - JTube</title>
-        <meta name="description" content={`Watch ${video.title} on JTube`} />
-        <meta property="og:title" content={`${video.title} - JTube`} />
-        <meta property="og:description" content={`Watch ${video.title} on JTube`} />
+        <title>{video.title} - JeffTube</title>
+        <meta name="description" content={`Watch ${video.title} on JeffTube`} />
+        <meta property="og:title" content={`${video.title} - JeffTube`} />
+        <meta property="og:description" content={`Watch ${video.title} on JeffTube`} />
         <meta property="og:type" content="video.other" />
         <meta property="og:image" content={getThumbnailUrl(video)} />
       </Helmet>
