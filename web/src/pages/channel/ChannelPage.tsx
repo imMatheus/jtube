@@ -121,7 +121,6 @@ export function ChannelPage() {
           <ChannelInfo
             name="Jeffery Epstein"
             handle="@jeevacation"
-            subscribers="392K"
             videoCount={videos.length}
             description="All of the videos released by the DOJ from the Epstein files."
             avatar={CHANNEL_AVATAR_URL}

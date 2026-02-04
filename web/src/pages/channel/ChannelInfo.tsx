@@ -5,7 +5,6 @@ import { VerifiedIcon, BellIcon, ChevronDownIcon } from "../../components/icons"
 interface ChannelInfoProps {
   name: string;
   handle: string;
-  subscribers: string;
   videoCount: number;
   description: string;
   avatar?: string;
@@ -17,7 +16,6 @@ const links: { label: string, url: string }[] = [];
 export function ChannelInfo({
   name,
   handle,
-  subscribers,
   videoCount,
   description,
   avatar,
@@ -43,8 +41,6 @@ export function ChannelInfo({
         </div>
         <div className="flex flex-wrap items-center gap-1 text-xs sm:text-sm text-(--color-text-secondary) mt-0.5 sm:mt-1">
           <span>{handle}</span>
-          <span>•</span>
-          <span>{subscribers} subscribers</span>
           <span>•</span>
           <span>{videoCount} videos</span>
         </div>

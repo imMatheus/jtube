@@ -25,7 +25,6 @@ export function VideoInfo({ video }: VideoInfoProps) {
   const isLiked = userLike === true;
 
   const channelName = "Jeffery Epstein";
-  const subscribers = "392K";
   const description = "Official Jeffery Epstein youtube channel.";
 
   return (
@@ -49,9 +48,6 @@ export function VideoInfo({ video }: VideoInfoProps) {
               </span>
               <VerifiedIcon />
             </div>
-            <span className="text-sm text-(--color-text-secondary)">
-              {subscribers} subscribers
-            </span>
           </div>
           <Button variant="primary" className="rounded-full px-4 py-2 text-sm font-medium">
             Subscribe
