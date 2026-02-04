@@ -136,7 +136,10 @@ async function extractMp4Links(page: Page, sourcePageUrl: string): Promise<Mp4Fi
   try {
     const links = await page.$$eval("a[href]", (anchors, baseUrl) => {
       return anchors
-        .filter((a) => a.getAttribute("href")?.toLowerCase().endsWith(".mp4"))
+        .filter((a) => {
+          const href = a.getAttribute("href")?.toLowerCase() || "";
+          return href.endsWith(".mp4") || href.endsWith(".mov");
+        })
         .map((a) => {
           const href = a.getAttribute("href") || "";
           const filename = a.textContent?.trim() || href.split("/").pop() || "";
@@ -519,7 +522,7 @@ async function scrapeDataset(
 
   const progressCallback = (result: PageResult, current: number, total: number) => {
     const percent = ((current / total) * 100).toFixed(1);
-    const mp4Count = result.mp4Files.length > 0 ? ` +${result.mp4Files.length} mp4` : "";
+    const mp4Count = result.mp4Files.length > 0 ? ` +${result.mp4Files.length} videos` : "";
     const status = result.success ? "OK" : `ERR:${result.error?.slice(0, 15)}`;
 
     // Update tracking
@@ -662,7 +665,7 @@ async function main() {
     console.log("SCRAPING COMPLETE");
     console.log("=============================");
     for (const result of results) {
-      console.log(`Dataset ${result.datasetId}: ${result.mp4Files.length} MP4 files from ${result.totalPages} pages`);
+      console.log(`Dataset ${result.datasetId}: ${result.mp4Files.length} video files from ${result.totalPages} pages`);
     }
     console.log(`\nTotal: ${totalFiles} MP4 files from ${totalPages} pages`);
     console.log(`Total time: ${formatDuration(totalDuration)}`);
