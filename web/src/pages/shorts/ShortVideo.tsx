@@ -6,12 +6,10 @@ import { Avatar } from "../../components/ui/Avatar";
 import {
   useVideoLike,
   useLikeVideo,
-  useDislikeVideo,
 } from "../../hooks/useVideoLikes";
 import { CommentSection } from "../../components/comments/CommentSection";
 import {
   LikeIcon,
-  DislikeIcon,
   ShareIcon,
   MoreVertIcon,
   PlayIcon,
@@ -51,7 +49,6 @@ export function ShortVideo({ video, isActive }: ShortVideoProps) {
   // Video like hooks
   const { data: likeData } = useVideoLike(video.id);
   const likeVideo = useLikeVideo(video.id);
-  const dislikeVideo = useDislikeVideo(video.id);
 
   const userLike = likeData?.userLike;
 
@@ -149,10 +146,6 @@ export function ShortVideo({ video, isActive }: ShortVideoProps) {
 
   const handleLike = () => {
     likeVideo.mutate();
-  };
-
-  const handleDislike = () => {
-    dislikeVideo.mutate();
   };
 
   const thumbnailUrl = getThumbnailUrl(video);
@@ -258,12 +251,6 @@ export function ShortVideo({ video, isActive }: ShortVideoProps) {
               label={formatCount(video.likes)}
               onClick={handleLike}
               active={userLike === true}
-            />
-            <ActionButton
-              icon={<DislikeIcon filled={userLike === false} />}
-              label={formatCount(video.dislikes)}
-              onClick={handleDislike}
-              active={userLike === false}
             />
             <ActionButton
               icon={<CommentIcon />}

@@ -45,30 +45,22 @@ commentsRoutes.get("/videos/:videoId/comments", async (c) => {
   // Get like counts and user's likes for all comments
   const commentIds = [...topLevelComments, ...allReplies].map((c) => c.id);
 
-  const likeCounts: Record<string, { likes: number; dislikes: number }> = {};
+  const likeCounts: Record<string, number> = {};
   const userLikes: Record<string, boolean | null> = {};
 
   if (commentIds.length > 0) {
-    // Get like/dislike counts
+    // Get like counts
     const likeResults = await db
       .select({
         commentId: commentLikes.commentId,
-        isLike: commentLikes.isLike,
         count: sql<number>`count(*)::int`,
       })
       .from(commentLikes)
       .where(sql`${commentLikes.commentId} IN ${commentIds}`)
-      .groupBy(commentLikes.commentId, commentLikes.isLike);
+      .groupBy(commentLikes.commentId);
 
     for (const row of likeResults) {
-      if (!likeCounts[row.commentId]) {
-        likeCounts[row.commentId] = { likes: 0, dislikes: 0 };
-      }
-      if (row.isLike) {
-        likeCounts[row.commentId].likes = row.count;
-      } else {
-        likeCounts[row.commentId].dislikes = row.count;
-      }
+      likeCounts[row.commentId] = row.count;
     }
 
     // Get current user's likes
@@ -99,8 +91,7 @@ commentsRoutes.get("/videos/:videoId/comments", async (c) => {
       id: comment.userId,
       username: comment.username,
     },
-    likes: likeCounts[comment.id]?.likes || 0,
-    dislikes: likeCounts[comment.id]?.dislikes || 0,
+    likes: likeCounts[comment.id] || 0,
     userLike: userLikes[comment.id] ?? null,
   });
 
@@ -149,7 +140,6 @@ commentsRoutes.post("/videos/:videoId/comments", async (c) => {
         username: user.username,
       },
       likes: 0,
-      dislikes: 0,
       userLike: null,
       replies: [],
     },
@@ -176,20 +166,11 @@ commentsRoutes.post("/comments/:commentId/like", async (c) => {
     .limit(1);
 
   if (existing.length > 0) {
-    if (existing[0].isLike) {
-      // Already liked, remove the like
-      await db
-        .delete(commentLikes)
-        .where(eq(commentLikes.id, existing[0].id));
-      return c.json({ userLike: null });
-    } else {
-      // Was dislike, change to like
-      await db
-        .update(commentLikes)
-        .set({ isLike: true })
-        .where(eq(commentLikes.id, existing[0].id));
-      return c.json({ userLike: true });
-    }
+    // Already liked, remove the like
+    await db
+      .delete(commentLikes)
+      .where(eq(commentLikes.id, existing[0].id));
+    return c.json({ userLike: null });
   }
 
   // No existing reaction, create like
@@ -200,49 +181,4 @@ commentsRoutes.post("/comments/:commentId/like", async (c) => {
   });
 
   return c.json({ userLike: true });
-});
-
-// POST /api/comments/:commentId/dislike - dislike a comment
-commentsRoutes.post("/comments/:commentId/dislike", async (c) => {
-  const commentId = c.req.param("commentId");
-  const ip = getClientIp(c.req.raw);
-  const user = await getOrCreateUser(ip);
-
-  // Check if user already has a reaction
-  const existing = await db
-    .select()
-    .from(commentLikes)
-    .where(
-      and(
-        eq(commentLikes.commentId, commentId),
-        eq(commentLikes.userId, user.id)
-      )
-    )
-    .limit(1);
-
-  if (existing.length > 0) {
-    if (!existing[0].isLike) {
-      // Already disliked, remove the dislike
-      await db
-        .delete(commentLikes)
-        .where(eq(commentLikes.id, existing[0].id));
-      return c.json({ userLike: null });
-    } else {
-      // Was like, change to dislike
-      await db
-        .update(commentLikes)
-        .set({ isLike: false })
-        .where(eq(commentLikes.id, existing[0].id));
-      return c.json({ userLike: false });
-    }
-  }
-
-  // No existing reaction, create dislike
-  await db.insert(commentLikes).values({
-    commentId,
-    userId: user.id,
-    isLike: false,
-  });
-
-  return c.json({ userLike: false });
 });

@@ -14,7 +14,6 @@ export interface Comment {
   createdAt: string;
   user: CommentUser;
   likes: number;
-  dislikes: number;
   userLike: boolean | null;
   replies: Comment[];
 }
@@ -54,16 +53,6 @@ async function likeComment(commentId: string): Promise<{ userLike: boolean | nul
   });
   if (!response.ok) {
     throw new Error("Failed to like comment");
-  }
-  return response.json();
-}
-
-async function dislikeComment(commentId: string): Promise<{ userLike: boolean | null }> {
-  const response = await fetch(`${API_URL}/api/comments/${commentId}/dislike`, {
-    method: "POST",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to dislike comment");
   }
   return response.json();
 }
@@ -112,19 +101,6 @@ export function useLikeComment(videoId: string) {
     mutationFn: likeComment,
     onSuccess: (_, commentId) => {
       posthog.capture("comment_reaction", { videoId, commentId, action: "like" });
-      queryClient.invalidateQueries({ queryKey: ["comments", videoId] });
-    },
-  });
-}
-
-export function useDislikeComment(videoId: string) {
-  const queryClient = useQueryClient();
-  const posthog = usePostHog();
-
-  return useMutation({
-    mutationFn: dislikeComment,
-    onSuccess: (_, commentId) => {
-      posthog.capture("comment_reaction", { videoId, commentId, action: "dislike" });
       queryClient.invalidateQueries({ queryKey: ["comments", videoId] });
     },
   });

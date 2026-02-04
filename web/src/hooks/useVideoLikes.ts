@@ -25,16 +25,6 @@ async function likeVideo(videoId: string): Promise<VideoLikeResponse> {
   return response.json();
 }
 
-async function dislikeVideo(videoId: string): Promise<VideoLikeResponse> {
-  const response = await fetch(`${API_URL}/api/videos/${videoId}/dislike`, {
-    method: "POST",
-  });
-  if (!response.ok) {
-    throw new Error("Failed to dislike video");
-  }
-  return response.json();
-}
-
 export function useVideoLike(videoId: string) {
   return useQuery({
     queryKey: ["videoLike", videoId],
@@ -50,20 +40,6 @@ export function useLikeVideo(videoId: string) {
     mutationFn: () => likeVideo(videoId),
     onSuccess: () => {
       posthog.capture("video_reaction", { videoId, action: "like" });
-      queryClient.invalidateQueries({ queryKey: ["videoLike", videoId] });
-      queryClient.invalidateQueries({ queryKey: ["videos"] });
-    },
-  });
-}
-
-export function useDislikeVideo(videoId: string) {
-  const queryClient = useQueryClient();
-  const posthog = usePostHog();
-
-  return useMutation({
-    mutationFn: () => dislikeVideo(videoId),
-    onSuccess: () => {
-      posthog.capture("video_reaction", { videoId, action: "dislike" });
       queryClient.invalidateQueries({ queryKey: ["videoLike", videoId] });
       queryClient.invalidateQueries({ queryKey: ["videos"] });
     },

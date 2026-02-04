@@ -7,7 +7,6 @@ export interface Video {
   length: number;
   views: number;
   likes: number;
-  dislikes: number;
   hasThumbnail: boolean;
   is_shorts: boolean;
   playlist: string | null;

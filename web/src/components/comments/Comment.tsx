@@ -3,11 +3,10 @@ import NumberFlow from "@number-flow/react";
 import type { Comment as CommentType } from "../../hooks/useComments";
 import {
   useLikeComment,
-  useDislikeComment,
   usePostComment,
 } from "../../hooks/useComments";
 import { CommentInput } from "./CommentInput";
-import { LikeIcon, DislikeIcon } from "../icons";
+import { LikeIcon } from "../icons";
 
 interface CommentProps {
   comment: CommentType;
@@ -41,15 +40,10 @@ export function Comment({ comment, videoId, isReply = false }: CommentProps) {
   const [showReplies, setShowReplies] = useState(false);
   const [showReplyInput, setShowReplyInput] = useState(false);
   const likeComment = useLikeComment(videoId);
-  const dislikeComment = useDislikeComment(videoId);
   const postComment = usePostComment(videoId);
 
   const handleLike = () => {
     likeComment.mutate(comment.id);
-  };
-
-  const handleDislike = () => {
-    dislikeComment.mutate(comment.id);
   };
 
   const handleReply = async (content: string) => {
@@ -91,7 +85,7 @@ export function Comment({ comment, videoId, isReply = false }: CommentProps) {
           <div className="flex items-center">
             <button
               onClick={handleLike}
-              className={`flex items-center gap-1 p-1.5 rounded-full hover:bg-(--color-bg-hover) ${comment.userLike === true ? "text-blue-500" : "text-(--color-text-secondary)"
+              className={`flex items-center gap-1 p-1.5 rounded-full hover:bg-(--color-bg-hover) cursor-pointer ${comment.userLike === true ? "text-blue-500" : "text-(--color-text-secondary)"
                 }`}
             >
               <LikeIcon className="w-4 h-4" filled={comment.userLike === true} />
@@ -101,19 +95,6 @@ export function Comment({ comment, videoId, isReply = false }: CommentProps) {
               style={{ width: Math.max(1, Math.ceil(comment.likes / 10)) + 'ch' }}
               className="text-xs text-(--color-text-secondary)" />
 
-          </div>
-
-          <div className="flex items-center">
-            <button
-              onClick={handleDislike}
-              className={`p-1.5 rounded-full hover:bg-(--color-bg-hover) ${comment.userLike === false ? "text-blue-500" : "text-(--color-text-secondary)"
-                }`}
-            >
-              <DislikeIcon className="w-4 h-4" filled={comment.userLike === false} />
-            </button>
-            <NumberFlow value={comment.dislikes}
-              style={{ width: Math.max(1, Math.ceil(comment.dislikes / 10)) + 'ch' }}
-              className="text-xs text-(--color-text-secondary)" />
           </div>
 
           {!isReply && (

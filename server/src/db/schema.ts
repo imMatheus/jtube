@@ -9,7 +9,6 @@ export const videos = pgTable("videos", {
   hasThumbnail: boolean("has_thumbnail").notNull().default(false),
   views: integer("views").notNull().default(0),
   likes: integer("likes").notNull().default(0),
-  dislikes: integer("dislikes").notNull().default(0),
   is_shorts: boolean("is_shorts").notNull().default(false), // if this video should be shown on the shorts page
   playlist: varchar("playlist", { length: 100 }), // playlist identifier (e.g., "elevator-cam", "lobby-cam")
 });
