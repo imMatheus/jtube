@@ -52,9 +52,7 @@ export function VideoInfo({ video }: VideoInfoProps) {
           </Button>
         </div>
 
-        {/* Action buttons */}
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Like */}
           <button
             className="flex items-center gap-2 px-4 py-2 bg-(--color-bg-secondary) rounded-full hover:bg-(--color-bg-hover) transition-colors cursor-pointer"
             onClick={() => likeMutation.mutate()}
