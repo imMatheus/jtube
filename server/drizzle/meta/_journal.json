@@ -43,6 +43,13 @@
       "when": 1770183645529,
       "tag": "0005_smooth_wasp",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770195860892,
+      "tag": "0006_slippery_havok",
+      "breakpoints": true
     }
   ]
 }

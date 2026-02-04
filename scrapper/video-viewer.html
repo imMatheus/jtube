@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Viewer - Debug Tool</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #0f0f0f;
+      color: #fff;
+      padding: 20px;
+      padding-bottom: 100px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .video-card {
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: border-color 0.2s;
+    }
+
+    .video-card.selected {
+      border-color: #a855f7;
+    }
+
+    .video-card video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+      background-color: #000;
+      transition: opacity 0.2s;
+    }
+
+    .video-card .info {
+      padding: 12px;
+    }
+
+    .video-card .filename {
+      font-size: 14px;
+      color: #aaa;
+      word-break: break-all;
+      margin-bottom: 8px;
+    }
+
+    .video-card .badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .badge.nsfw {
+      background-color: #dc2626;
+      color: white;
+    }
+
+    .badge.shorts {
+      background-color: #2563eb;
+      color: white;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 50px;
+      font-size: 18px;
+      color: #888;
+    }
+
+    .error {
+      text-align: center;
+      padding: 50px;
+      font-size: 18px;
+      color: #ff4444;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 12px 20px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .toolbar-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toolbar-btn.nsfw {
+      background-color: #dc2626;
+      color: white;
+    }
+
+    .toolbar-btn.nsfw:hover {
+      background-color: #b91c1c;
+    }
+
+    .toolbar-btn.shorts {
+      background-color: #2563eb;
+      color: white;
+    }
+
+    .toolbar-btn.shorts:hover {
+      background-color: #1d4ed8;
+    }
+
+    .toolbar-label {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .selected-count {
+      color: #a855f7;
+      font-weight: 600;
+    }
+
+    /* Sticky buttons */
+    .sticky-btn {
+      position: fixed;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 1000;
+      transition: all 0.2s;
+    }
+
+    .btn-deselect {
+      top: 20px;
+      right: 20px;
+      background-color: #7c3aed;
+      color: white;
+    }
+
+    .btn-deselect:hover {
+      background-color: #6d28d9;
+    }
+
+    .btn-copy {
+      top: 20px;
+      left: 20px;
+      background-color: #059669;
+      color: white;
+    }
+
+    .btn-copy:hover {
+      background-color: #047857;
+    }
+
+    .btn-copy.copied {
+      background-color: #10b981;
+    }
+  </style>
+</head>
+<body>
+  <button class="sticky-btn btn-copy" onclick="copyJsonState()">Copy JSON</button>
+  <button class="sticky-btn btn-deselect" onclick="deselectAll()">Deselect All</button>
+
+  <h1>Video Debug Tool</h1>
+  <div id="container">
+    <div class="loading">Loading videos...</div>
+  </div>
+
+  <div class="toolbar">
+    <span class="toolbar-label">Selected: <span id="selected-count" class="selected-count">0</span></span>
+    <button class="toolbar-btn nsfw" onclick="toggleNsfw()">NSFW</button>
+    <button class="toolbar-btn shorts" onclick="toggleShorts()">is_shorts</button>
+  </div>
+
+  <script>
+    const ASSETS_BASE_URL = "https://storage.cloud.google.com/jefftube";
+    const FALLBACK_THUMBNAIL = "https://upload.wikimedia.org/wikipedia/en/thumb/a/a4/IDogLights2.JPG/250px-IDogLights2.JPG";
+
+    // State management
+    const videoState = new Map(); // filename -> { nsfw: boolean, is_shorts: boolean }
+    const selectedVideos = new Set(); // Set of filenames
+
+    function getVideoUrl(filename) {
+      return `${ASSETS_BASE_URL}/${filename}`;
+    }
+
+    function getThumbnailUrl(filename) {
+      const baseName = filename.replace(/\.(mp4|mov)$/, "");
+      return `${ASSETS_BASE_URL}/thumbnails/${baseName}.jpg`;
+    }
+
+    function updateSelectedCount() {
+      document.getElementById('selected-count').textContent = selectedVideos.size;
+    }
+
+    function toggleVideoSelection(filename, cardEl) {
+      if (selectedVideos.has(filename)) {
+        selectedVideos.delete(filename);
+        cardEl.classList.remove('selected');
+      } else {
+        selectedVideos.add(filename);
+        cardEl.classList.add('selected');
+      }
+      updateSelectedCount();
+    }
+
+    function deselectAll() {
+      selectedVideos.clear();
+      document.querySelectorAll('.video-card.selected').forEach(card => {
+        card.classList.remove('selected');
+      });
+      updateSelectedCount();
+    }
+
+    function toggleNsfw() {
+      if (selectedVideos.size === 0) return;
+
+      selectedVideos.forEach(filename => {
+        const state = videoState.get(filename) || { nsfw: false, is_shorts: false };
+        state.nsfw = !state.nsfw;
+        videoState.set(filename, state);
+        updateCardBadges(filename);
+      });
+    }
+
+    function toggleShorts() {
+      if (selectedVideos.size === 0) return;
+
+      selectedVideos.forEach(filename => {
+        const state = videoState.get(filename) || { nsfw: false, is_shorts: false };
+        state.is_shorts = !state.is_shorts;
+        videoState.set(filename, state);
+        updateCardBadges(filename);
+      });
+    }
+
+    function updateCardBadges(filename) {
+      const card = document.querySelector(`.video-card[data-filename="${filename}"]`);
+      if (!card) return;
+
+      const state = videoState.get(filename) || { nsfw: false, is_shorts: false };
+      const badgesContainer = card.querySelector('.badges');
+      badgesContainer.innerHTML = '';
+
+      if (state.nsfw) {
+        const badge = document.createElement('span');
+        badge.className = 'badge nsfw';
+        badge.textContent = 'NSFW';
+        badgesContainer.appendChild(badge);
+      }
+
+      if (state.is_shorts) {
+        const badge = document.createElement('span');
+        badge.className = 'badge shorts';
+        badge.textContent = 'SHORT';
+        badgesContainer.appendChild(badge);
+      }
+    }
+
+    function copyJsonState() {
+      const output = [];
+      videoState.forEach((state, filename) => {
+        if (state.nsfw || state.is_shorts) {
+          output.push({
+            filename,
+            ...state
+          });
+        }
+      });
+
+      const json = JSON.stringify(output, null, 2);
+      navigator.clipboard.writeText(json).then(() => {
+        const btn = document.querySelector('.btn-copy');
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy JSON';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Handle option+click to play video
+    function handleVideoClick(e, videoEl) {
+      if (e.altKey) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const videoUrl = videoEl.dataset.src;
+        if (!videoEl.src && videoUrl) {
+          videoEl.src = videoUrl;
+          videoEl.load();
+        }
+
+        if (videoEl.paused) {
+          videoEl.muted = true;
+          videoEl.play().catch(() => {});
+          videoEl.style.opacity = '1';
+        } else {
+          videoEl.pause();
+        }
+      }
+    }
+
+    // IntersectionObserver to pause videos when out of view
+    function setupVideoObserver() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          const video = entry.target;
+
+          if (!entry.isIntersecting && !video.paused) {
+            video.pause();
+          }
+        });
+      }, {
+        threshold: 0.1
+      });
+
+      return observer;
+    }
+
+    // Load saved state from video-state.json
+    async function loadSavedState() {
+      try {
+        const response = await fetch('./video-state.json');
+        if (!response.ok) return;
+
+        const savedState = await response.json();
+        if (Array.isArray(savedState)) {
+          savedState.forEach(item => {
+            videoState.set(item.filename, {
+              nsfw: item.nsfw || false,
+              is_shorts: item.is_shorts || false
+            });
+          });
+        }
+        console.log(`Loaded ${savedState.length} saved states`);
+      } catch (error) {
+        console.log('No saved state found or error loading:', error.message);
+      }
+    }
+
+    async function loadVideos() {
+      const container = document.getElementById('container');
+
+      try {
+        // Load saved state first
+        await loadSavedState();
+
+        const response = await fetch('http://localhost:3001/api/videos');
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const videos = data.videos || data;
+
+        if (!Array.isArray(videos) || videos.length === 0) {
+          container.innerHTML = '<div class="error">No videos found</div>';
+          return;
+        }
+
+        const grid = document.createElement('div');
+        grid.className = 'grid';
+
+        const observer = setupVideoObserver();
+
+        videos.reverse().forEach(video => {
+          const filename = typeof video === 'string' ? video : video.filename;
+          const videoUrl = getVideoUrl(filename);
+
+          // Initialize state (preserve any loaded state)
+          if (!videoState.has(filename)) {
+            videoState.set(filename, { nsfw: false, is_shorts: false });
+          }
+
+          const card = document.createElement('div');
+          card.className = 'video-card';
+          card.dataset.filename = filename;
+
+          // Click to select
+          card.addEventListener('click', (e) => {
+            // Don't select if clicking on video controls
+            if (e.target.tagName === 'VIDEO') return;
+            toggleVideoSelection(filename, card);
+          });
+
+          const videoEl = document.createElement('video');
+          videoEl.controls = true;
+          videoEl.preload = 'none';
+          videoEl.muted = true;
+          videoEl.loop = true;
+          videoEl.playsInline = true;
+          videoEl.dataset.src = videoUrl;
+          videoEl.poster = getThumbnailUrl(filename);
+          videoEl.style.opacity = '0.7'; // Dimmed until playing
+
+          // Fallback if thumbnail fails to load
+          videoEl.addEventListener('error', (e) => {
+            if (e.target.tagName === 'VIDEO' && !videoEl.src) {
+              videoEl.poster = FALLBACK_THUMBNAIL;
+            }
+          }, true);
+
+          // Option+click to play
+          videoEl.addEventListener('click', (e) => handleVideoClick(e, videoEl));
+
+          const infoDiv = document.createElement('div');
+          infoDiv.className = 'info';
+
+          const filenameDiv = document.createElement('div');
+          filenameDiv.className = 'filename';
+          filenameDiv.textContent = filename;
+
+          const badgesDiv = document.createElement('div');
+          badgesDiv.className = 'badges';
+
+          // Add badges for saved state
+          const state = videoState.get(filename);
+          if (state?.nsfw) {
+            const badge = document.createElement('span');
+            badge.className = 'badge nsfw';
+            badge.textContent = 'NSFW';
+            badgesDiv.appendChild(badge);
+          }
+          if (state?.is_shorts) {
+            const badge = document.createElement('span');
+            badge.className = 'badge shorts';
+            badge.textContent = 'SHORT';
+            badgesDiv.appendChild(badge);
+          }
+
+          infoDiv.appendChild(filenameDiv);
+          infoDiv.appendChild(badgesDiv);
+
+          card.appendChild(videoEl);
+          card.appendChild(infoDiv);
+          grid.appendChild(card);
+
+          observer.observe(videoEl);
+        });
+
+        container.innerHTML = '';
+        container.appendChild(grid);
+
+      } catch (error) {
+        container.innerHTML = `<div class="error">Error loading videos: ${error.message}</div>`;
+        console.error('Error:', error);
+      }
+    }
+
+    loadVideos();
+  </script>
+</body>
+</html>

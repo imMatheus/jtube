@@ -28,7 +28,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     queryFn: fetchVideos,
   });
 
-  const randomSortedShorts = useMemo(() => shuffleArray(videos), [videos]);
+  const randomSortedShorts = useMemo(() => shuffleArray(videos.filter(v => v.is_shorts)), [videos]);
 
   const trackView = useCallback(async (videoId: string) => {
     try {

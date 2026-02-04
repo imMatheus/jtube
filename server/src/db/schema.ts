@@ -10,6 +10,7 @@ export const videos = pgTable("videos", {
   views: integer("views").notNull().default(0),
   likes: integer("likes").notNull().default(0),
   dislikes: integer("dislikes").notNull().default(0),
+  is_shorts: boolean("is_shorts").notNull().default(false), // if this video should be shown on the shorts page
 });
 
 export const users = pgTable("users", {

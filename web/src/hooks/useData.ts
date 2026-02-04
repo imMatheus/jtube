@@ -9,6 +9,7 @@ export interface Video {
   likes: number;
   dislikes: number;
   hasThumbnail: boolean;
+  is_shorts: boolean;
 }
 
 export interface DataContextType {

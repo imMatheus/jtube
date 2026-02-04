@@ -1,0 +1,1 @@
+ALTER TABLE "videos" ADD COLUMN "is_shorts" boolean DEFAULT false NOT NULL;

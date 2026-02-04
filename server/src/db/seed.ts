@@ -1,6 +1,7 @@
 import { db } from "./index";
 import { videos } from "./schema";
 import data from "../data.json";
+import videoState from "../video-state.json";
 
 interface VideoData {
   id: string;
@@ -9,6 +10,17 @@ interface VideoData {
   length: string;
   hasThumbnail: boolean;
 }
+
+interface VideoStateEntry {
+  filename: string;
+  nsfw: boolean;
+  is_shorts: boolean;
+}
+
+// Create a lookup map from filename to video state
+const videoStateMap = new Map<string, VideoStateEntry>(
+  (videoState as VideoStateEntry[]).map((entry) => [entry.filename, entry])
+);
 
 // Convert time string (e.g., "59:22", "1:00:25") to seconds
 function parseTimeToSeconds(timeStr: string): number {
@@ -30,22 +42,39 @@ async function seed() {
   console.log("Clearing existing videos...");
   await db.delete(videos);
 
-  // Insert all videos from data.json, filtering out those with null titles
-  const videoData = (data as VideoData[]).filter((video) => video.title !== null);
-  console.log(`Inserting ${videoData.length} videos (filtered out ${(data as VideoData[]).length - videoData.length} with null titles)...`);
+  // Insert all videos from data.json, filtering out those with null titles and NSFW videos
+  const allVideos = data as VideoData[];
+  const videoData = allVideos.filter((video) => {
+    if (video.title === null) return false;
+    const state = videoStateMap.get(video.filename);
+    if (state?.nsfw) return false;
+    return true;
+  });
+
+  const nullTitleCount = allVideos.filter((v) => v.title === null).length;
+  const nsfwCount = allVideos.filter((v) => {
+    const state = videoStateMap.get(v.filename);
+    return state?.nsfw && v.title !== null;
+  }).length;
+
+  console.log(`Inserting ${videoData.length} videos (filtered out ${nullTitleCount} with null titles, ${nsfwCount} NSFW)...`);
 
   // Insert in batches of 100 to avoid issues with large inserts
   const batchSize = 100;
   for (let i = 0; i < videoData.length; i += batchSize) {
     const batch = videoData.slice(i, i + batchSize);
     await db.insert(videos).values(
-      batch.map((video) => ({
-        id: video.id,
-        title: video.title,
-        filename: video.filename,
-        length: parseTimeToSeconds(video.length),
-        hasThumbnail: video.hasThumbnail,
-      }))
+      batch.map((video) => {
+        const state = videoStateMap.get(video.filename);
+        return {
+          id: video.id,
+          title: video.title,
+          filename: video.filename,
+          length: parseTimeToSeconds(video.length),
+          hasThumbnail: video.hasThumbnail,
+          is_shorts: state?.is_shorts ?? false,
+        };
+      })
     );
     console.log(`Inserted ${Math.min(i + batchSize, videoData.length)}/${videoData.length} videos`);
   }

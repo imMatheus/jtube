@@ -4,7 +4,7 @@ import { SearchIcon } from '../../components/icons';
 const channelTabs = [
   { id: "home", label: "Home" },
   { id: "videos", label: "Videos" },
-  { id: "shorts", label: "Shorts" },
+  // { id: "shorts", label: "Shorts" },
 ];
 
 interface ChannelTabsProps {
