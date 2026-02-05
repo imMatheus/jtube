@@ -79,6 +79,9 @@ export function CommentSection({ videoId }: CommentSectionProps) {
         userInitial={currentUser?.username?.[1]?.toUpperCase() || "?"}
         isLoading={postComment.isPending}
       />
+      {postComment.isError && (
+        <p className="text-sm text-red-500 mt-2">{postComment.error.message}</p>
+      )}
 
       {/* Comments list */}
       <div className="mt-6 space-y-4">

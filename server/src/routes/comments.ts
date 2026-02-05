@@ -120,6 +120,26 @@ commentsRoutes.post("/videos/:videoId/comments", async (c) => {
     return c.json({ error: "Content is required" }, 400);
   }
 
+  // Rate limit: max 3 comments per user per video per day
+  const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const recentComments = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(comments)
+    .where(
+      and(
+        eq(comments.videoId, videoId),
+        eq(comments.userId, user.id),
+        sql`${comments.createdAt} > ${oneDayAgo}`
+      )
+    );
+
+  if (recentComments[0].count >= 3) {
+    return c.json(
+      { error: "You have left too many comments already" },
+      429
+    );
+  }
+
   const newComment = await db
     .insert(comments)
     .values({
