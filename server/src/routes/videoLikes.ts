@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { db } from "../db";
 import { videos, videoLikes } from "../db/schema";
 import { getClientIp, getOrCreateUser } from "./users";
@@ -47,10 +47,11 @@ videoLikesRoutes.post("/videos/:videoId/like", async (c) => {
   if (existing.length > 0) {
     // Already liked, remove the like
     await db.delete(videoLikes).where(eq(videoLikes.id, existing[0].id));
-    // Decrement likes count
-    await db.execute(
-      `UPDATE videos SET likes = likes - 1 WHERE id = '${videoId}'`
-    );
+    // Decrement likes count (floor at 0 to prevent negative)
+    await db
+      .update(videos)
+      .set({ likes: sql`GREATEST(${videos.likes} - 1, 0)` })
+      .where(eq(videos.id, videoId));
     return c.json({ userLike: null });
   }
 
@@ -61,9 +62,10 @@ videoLikesRoutes.post("/videos/:videoId/like", async (c) => {
     isLike: true,
   });
   // Increment likes count
-  await db.execute(
-    `UPDATE videos SET likes = likes + 1 WHERE id = '${videoId}'`
-  );
+  await db
+    .update(videos)
+    .set({ likes: sql`${videos.likes} + 1` })
+    .where(eq(videos.id, videoId));
 
   return c.json({ userLike: true });
 });
