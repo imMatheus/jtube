@@ -28,7 +28,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
     queryFn: fetchVideos,
   });
 
-  const randomSortedShorts = useMemo(() => shuffleArray(videos.filter(v => v.is_shorts)), [videos]);
+  // Stable key that only changes when shorts are added/removed, not when metadata (likes/views) changes
+  const shortsKey = videos
+    .filter(v => v.is_shorts)
+    .map(v => v.id)
+    .sort()
+    .join(',');
+
+  // Only reshuffle when the set of shorts changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const shortsOrder = useMemo(() => shuffleArray(videos.filter(v => v.is_shorts).map(v => v.id)), [shortsKey]);
+
+  // Derive sorted shorts using stable order + current video data (picks up metadata changes without reshuffling)
+  const randomSortedShorts = useMemo(() => {
+    const videoMap = new Map(videos.map(v => [v.id, v]));
+    return shortsOrder
+      .map(id => videoMap.get(id))
+      .filter((v): v is Video => v != null);
+  }, [videos, shortsOrder]);
 
   const trackView = useCallback(async (videoId: string) => {
     try {
