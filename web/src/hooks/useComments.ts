@@ -42,7 +42,8 @@ async function postComment(
     body: JSON.stringify({ content, parentId }),
   });
   if (!response.ok) {
-    throw new Error("Failed to post comment");
+    const data = await response.json().catch(() => null);
+    throw new Error(data?.error || "Failed to post comment");
   }
   return response.json();
 }
