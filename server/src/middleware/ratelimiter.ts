@@ -27,3 +27,9 @@ export const videoViewRateLimiter = rateLimiter({
     limit: 30, // 30 video views per minute
     keyGenerator: (c) => c.req.header("x-forwarded-for") ?? "", // Use IP address as key
 });
+
+export const defaultRateLimiter = rateLimiter({
+    windowMs: 60 * 1000, // 1 minute
+    limit: 50, // 100 requests per window
+    keyGenerator: (c) => c.req.header("x-forwarded-for") ?? "", // Use IP address as key
+  })

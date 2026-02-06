@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger as honoLogger } from "hono/logger";
-import { rateLimiter } from "hono-rate-limiter";
+import { defaultRateLimiter } from "./middleware/ratelimiter";
 import { logger } from "./logger";
 import { usersRoutes } from "./routes/users";
 import { videosRoutes } from "./routes/videos";
@@ -13,14 +13,9 @@ const app = new Hono();
 // Middleware
 app.use("*", honoLogger());
 app.use("*", cors());
-app.use(
-  "/api/*",
-  rateLimiter({
-    windowMs: 60 * 1000, // 1 minute
-    limit: 50, // 100 requests per window
-    keyGenerator: (c) => c.req.header("x-forwarded-for") ?? "", // Use IP address as key
-  })
-);
+
+// defined in middleware/ratelimiter.ts, 100 requests per minute per IP for all API routes
+app.use("/api/*", defaultRateLimiter);
 
 
 // Health check
