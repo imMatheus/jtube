@@ -16,7 +16,6 @@ app.use("*", cors());
 // Apply default rate limiter to all API routes, specific routes will have their own rate limiters as needed
 app.use("/api/*", defaultRateLimiter);
 
-
 // Health check
 app.get("/health", (c) => {
   return c.json({ status: "ok", timestamp: new Date().toISOString() });
