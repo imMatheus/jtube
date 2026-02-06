@@ -21,6 +21,7 @@ app.use(
   })
 );
 
+
 // Health check
 app.get("/health", (c) => {
   return c.json({ status: "ok", timestamp: new Date().toISOString() });

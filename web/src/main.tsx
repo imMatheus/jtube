@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { DataProvider } from "./contexts/DataContext";
+import { CaptchaProvider } from "./contexts/CaptchaContext";
 import { PostHogProvider } from 'posthog-js/react'
 import App from "./App.tsx";
 import "./index.css";
@@ -21,13 +22,15 @@ createRoot(document.getElementById("root")!).render(
     <HelmetProvider>
       <PostHogProvider apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY} options={options}>
         <QueryClientProvider client={queryClient}>
-          <DataProvider>
-            <ThemeProvider>
-              <BrowserRouter>
-                <App />
-              </BrowserRouter>
-            </ThemeProvider>
-          </DataProvider>
+          <CaptchaProvider>
+            <DataProvider>
+              <ThemeProvider>
+                <BrowserRouter>
+                  <App />
+                </BrowserRouter>
+              </ThemeProvider>
+            </DataProvider>
+          </CaptchaProvider>
         </QueryClientProvider>
       </PostHogProvider>
     </HelmetProvider>

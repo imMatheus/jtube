@@ -3,6 +3,7 @@ import { and, eq, sql } from "drizzle-orm";
 import { db } from "../db";
 import { videos, videoLikes } from "../db/schema";
 import { getClientIp, getOrCreateUser } from "./users";
+import { recaptcha } from "../middleware/recaptcha";
 
 export const videoLikesRoutes = new Hono();
 
@@ -27,7 +28,7 @@ videoLikesRoutes.get("/videos/:videoId/like", async (c) => {
 });
 
 // POST /api/videos/:videoId/like - like a video
-videoLikesRoutes.post("/videos/:videoId/like", async (c) => {
+videoLikesRoutes.post("/videos/:videoId/like", recaptcha, async (c) => {
   const videoId = c.req.param("videoId");
   const ip = getClientIp(c.req.raw);
   const user = await getOrCreateUser(ip);
