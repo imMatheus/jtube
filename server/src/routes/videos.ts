@@ -3,6 +3,7 @@ import { desc, eq, sql } from "drizzle-orm";
 import { db } from "../db";
 import { videos } from "../db/schema";
 import { logger } from "../logger";
+import { videoViewRateLimiter } from "../middleware/ratelimiting";
 
 export const videosRoutes = new Hono();
 
@@ -13,7 +14,7 @@ videosRoutes.get("/videos", async (c) => {
 });
 
 // POST /api/videos/:id/view - increment view count
-videosRoutes.post("/videos/:id/view", async (c) => {
+videosRoutes.post("/videos/:id/view", videoViewRateLimiter, async (c) => {
   const videoId = c.req.param("id");
 
   const result = await db
