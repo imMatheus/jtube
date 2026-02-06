@@ -4,6 +4,7 @@ import { db } from "../db";
 import { videos } from "../db/schema";
 import { logger } from "../logger";
 import { recaptcha } from "../middleware/recaptcha";
+import { videoViewRateLimiter } from "../middleware/ratelimiter";
 
 export const videosRoutes = new Hono();
 
@@ -14,7 +15,7 @@ videosRoutes.get("/videos", async (c) => {
 });
 
 // POST /api/videos/:id/view - increment view count
-videosRoutes.post("/videos/:id/view", recaptcha, async (c) => {
+videosRoutes.post("/videos/:id/view", recaptcha, videoViewRateLimiter, async (c) => {
   const videoId = c.req.param("id");
 
   const result = await db
