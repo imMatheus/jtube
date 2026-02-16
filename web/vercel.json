@@ -1,4 +1,28 @@
 {
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "jefftube.net"
+        }
+      ],
+      "destination": "https://jmail.world/jefftube",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.jefftube.net"
+        }
+      ],
+      "destination": "https://jmail.world/jefftube",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
